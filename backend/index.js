@@ -1,4 +1,5 @@
 const express = require('express');
+const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
@@ -26,6 +27,7 @@ app.use(
     secret: keys.session.cookieKey,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: keys.mongodb.dbURI }),
     cookie: { secure: true }, // Set to true if using HTTPS
   })
 );
@@ -40,7 +42,8 @@ mongoose
     console.log('Connected to MongoDB via Mongoose');
   })
   .catch((err) => {
-    console.error('Error connecting to MongoDB via Mongoose', err);
+    console.log('Error connecting to MongoDB via Mongoose', err);
+    process.exit(1); // Exit the process if the connection fails
   });
 
 // Import routes
