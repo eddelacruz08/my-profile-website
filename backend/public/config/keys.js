@@ -8,7 +8,7 @@ module.exports = {
   },
   mongodb: {
     dbURI:
-      process.env.MONGO_URI ||
+      process.env.MONGODB_URI ||
       'mongodb+srv://vercel-admin-user:88jMPcHNGfwr4CHS@cluster0.bwpcxvy.mongodb.net/myProfileWebsite?retryWrites=true&w=majority',
     database: 'myProfileWebsite',
   },
