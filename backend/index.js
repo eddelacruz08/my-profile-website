@@ -1,5 +1,4 @@
 const express = require('express');
-const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
@@ -20,12 +19,6 @@ app.use(
     credentials: true,
   })
 );
-// app.use(
-//   cors({
-//     origin: keys.frontend.url,
-//     credentials: true,
-//   })
-// );
 
 // Replace cookieSession with express-session
 app.use(
@@ -33,7 +26,6 @@ app.use(
     secret: keys.session.cookieKey,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: keys.mongodb.dbURI }),
     cookie: { secure: true }, // Set to true if using HTTPS
   })
 );
@@ -79,8 +71,3 @@ app.use((req, res, next) => {
 });
 
 module.exports = app;
-// const PORT = process.env.PORT || 5000;
-
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
