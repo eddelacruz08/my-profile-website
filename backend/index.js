@@ -32,7 +32,8 @@ app.use(
     secret: keys.session.cookieKey,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }, // Set to true if using HTTPS
+    store: MongoStore.create({ mongoUrl: keys.mongodb.dbURI }),
+    cookie: { secure: true }, // Set to true if using HTTPS
   })
 );
 
@@ -41,7 +42,7 @@ app.use(passport.session());
 
 // Connect to MongoDB using mongoose
 mongoose
-  .connect(keys.mongodb.dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(keys.mongodb.dbURI)
   .then(() => {
     console.log('Connected to MongoDB via Mongoose');
   })
@@ -76,6 +77,7 @@ app.use((req, res, next) => {
   next();
 });
 
+module.exports = app;
 // const PORT = process.env.PORT || 5000;
 
 // app.listen(PORT, () => {
