@@ -9,7 +9,7 @@ module.exports = {
   mongodb: {
     dbURI:
       process.env.MONGODB_URI ||
-      'mongodb+srv://edmondelacruz110:dhu3FCsmd7fxiFC7@cluster0.bwpcxvy.mongodb.net/myProfileWebsite?retryWrites=true&w=majority&appName=Cluster0',
+      'mongodb+srv://edmondelacruz110:dhu3FCsmd7fxiFC7@cluster0.bwpcxvy.mongodb.net/myProfileWebsite?retryWrites=true&w=majority',
     database: 'myProfileWebsite',
   },
   frontend: {
