@@ -54,6 +54,10 @@ const pageLinksRoutes = require('./public/routes/page-links-routes');
 const publicUserRoutes = require('./public/routes/public-user-routes');
 const userRoutes = require('./public/routes/user-routes');
 
+app.get('/api/hello', (req, res) => {
+  res.send('Hello from the serverless function!');
+});
+
 // Define global public routes (no authentication required)
 app.use('/api', publicUserRoutes, pageLinksRoutes);
 
