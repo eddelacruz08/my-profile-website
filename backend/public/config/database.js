@@ -1,16 +1,16 @@
 const { MongoClient } = require('mongodb');
-const keys = require('./keys');  // Ensure this file correctly exports your MongoDB URI and database name
+const keys = require('./keys'); // Ensure this file correctly exports your MongoDB URI and database name
 
 let database;
 
 const connectToDatabase = async () => {
   try {
-    const client = await MongoClient.connect(keys.mongodb.dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
+    const client = await MongoClient.connect(keys.mongodb.dbURI);
     console.log('Connected to MongoDB');
     database = client.db(keys.mongodb.database);
   } catch (err) {
     console.error('Error connecting to MongoDB', err);
-    throw err;  // Ensure errors are handled
+    throw err; // Ensure errors are handled
   }
 };
 
