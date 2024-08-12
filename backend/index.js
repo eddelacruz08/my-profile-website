@@ -41,7 +41,7 @@ app.use(passport.session());
 
 // Connect to MongoDB using mongoose
 mongoose
-  .connect(keys.mongodb.dbURI)
+  .connect(keys.mongodb.dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB via Mongoose');
   })
