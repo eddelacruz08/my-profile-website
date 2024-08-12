@@ -35,30 +35,24 @@ export default function Profile() {
   const toggleColorMode = () => {
     setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
-  console.log(username);
+
   useEffect(() => {
-    const fetchPageLinks = async () => {
+    const fetchData = async () => {
       try {
-        await client.get('/page-links/get-page-links', { withCredentials: true }).then((response) => {
-          setPageLinks(response.data);
+        // Use Promise.all to fetch both API data concurrently
+        const [response1, response2] = await Promise.all([
+          client.get('/page-links/get-page-links', { withCredentials: true }),
+          client.get('/users-information/get-user' + (username ? `/${username}` : ''), { withCredentials: true }),
+        ]);
+
+        setPageLinks(response1.data);
+        setContacts({
+          contactNumber: response2.data?.phone,
+          emailAddress: response2.data?.emailAddress,
+          address: response2.data?.address,
         });
-      } catch (error) {
-        console.log('Error', 'Fetching Failed!');
-      }
-    };
-    const fetchUserInfo = async () => {
-      try {
-        await client
-          .get('/users-information/get-user' + (username ? `/${username}` : ''), { withCredentials: true })
-          .then((response?: any) => {
-            setContacts({
-              contactNumber: response.data?.phone,
-              emailAddress: response.data?.emailAddress,
-              address: response.data?.address,
-            });
-            setUserInfo(response.data);
-            setWorkExperience(response.data?.work_experiences);
-          });
+        setUserInfo(response2.data);
+        setWorkExperience(response2.data?.work_experiences);
       } catch (error) {
         if (error.response && error.response.status === 401) {
           if (username === undefined) {
@@ -77,9 +71,8 @@ export default function Profile() {
         };
       }
     };
-
-    fetchPageLinks();
-    fetchUserInfo();
+    // Call the function to fetch data
+    fetchData();
   }, [navigate, username]);
 
   if (loading) {
@@ -90,9 +83,9 @@ export default function Profile() {
     return <Form>Fill-up this form</Form>;
   }
 
-  //if (error?.response?.status === 401) {
-  //  return <Unauthorized>{error?.message}</Unauthorized>;
-  //}
+  if (error?.response?.status === 401) {
+    return <Unauthorized>{error?.message}</Unauthorized>;
+  }
 
   if (error?.message) {
     return <div>Error: {error?.message}</div>;
