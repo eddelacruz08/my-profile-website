@@ -53,7 +53,8 @@ app.get('/', (req, res) => {
 });
 
 // Define global public routes (no authentication required)
-app.use('/api', publicUserRoutes, pageLinksRoutes);
+app.use('/api', pageLinksRoutes);
+app.use('/api', publicUserRoutes);
 
 // Use authRoutes for authentication
 app.use('/api', authRoutes);
