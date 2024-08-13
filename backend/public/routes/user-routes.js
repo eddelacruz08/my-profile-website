@@ -1,7 +1,7 @@
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const router = express.Router();
-const keys = require('./config/keys');
+const keys = require('./public/config/keys');
 
 let database;
 
