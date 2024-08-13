@@ -27,11 +27,7 @@ let isConnected;
 const connectToDatabase = async () => {
   if (!isConnected) {
     try {
-      await mongoose.connect(keys.mongodb.dbURI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        poolSize: 10,
-      });
+      await mongoose.connect(keys.mongodb.dbURI);
       isConnected = true;
       console.log('Connected to MongoDB via Mongoose');
     } catch (err) {
