@@ -1,20 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
-const PageLink = require('../models/pageLinks'); // Import the PageLink model
+const { getDatabase } = require('../config/database');
 
 // API to get page links
 router.get('/page-links/get-page-links', async (req, res) => {
   try {
-    const pageLinks = await PageLink.find({}); // Use the model to query the database
+    const db = getDatabase(); // Use the function to get the database instance
+
+    const pageLinks = await db.collection('pageLinks').find({}).toArray();
 
     if (pageLinks.length === 0) {
       return res.status(404).send({ message: 'No data found!' });
     }
     res.send(pageLinks);
   } catch (error) {
-    console.error('Error while retrieving page links:', error);
-    res.status(500).send({ message: 'Internal server error' });
+    res.status(500).send(error);
   }
 });
 
