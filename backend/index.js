@@ -21,23 +21,7 @@ app.use(
   })
 );
 
-// MongoDB connection setup
-let isConnected;
-
-const connectToDatabase = async () => {
-  if (!isConnected) {
-    try {
-      await mongoose.connect(keys.mongodb.dbURI);
-      isConnected = true;
-      console.log('Connected to MongoDB via Mongoose');
-    } catch (err) {
-      console.error('Error connecting to MongoDB via Mongoose', err);
-      process.exit(1); // Exit the process if the connection fails
-    }
-  }
-};
-
-connectToDatabase();
+const { getDatabase } = require('./public/config/database'); // Import the database functions
 
 // Replace cookieSession with express-session
 app.use(
@@ -66,9 +50,14 @@ const publicUserRoutes = require('./public/routes/public-user-routes');
 const userRoutes = require('./public/routes/user-routes');
 
 // Middleware to check database connection for each request
-app.use(async (req, res, next) => {
-  await connectToDatabase(); // Ensure the database connection is established
-  next();
+app.use((req, res, next) => {
+  try {
+    getDatabase(); // Ensure the database connection is established
+    next();
+  } catch (err) {
+    console.error('Database connection error:', err);
+    res.status(500).send('Database connection error');
+  }
 });
 
 app.get('/', (req, res) => {
