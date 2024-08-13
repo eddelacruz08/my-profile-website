@@ -6,6 +6,6 @@ const pageLinkSchema = new mongoose.Schema({
   // Define other fields as needed
 });
 
-const PageLink = mongoose.model('PageLink', pageLinkSchema);
+const PageLink = mongoose.model('pageLinks', pageLinkSchema);
 
 module.exports = PageLink;
