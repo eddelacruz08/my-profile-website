@@ -5,9 +5,8 @@ let database;
 
 const connectToDatabase = async () => {
   try {
-    const client = await mongoose.connect(keys.mongodb.dbURI);
-    console.log('Connected to MongoDB');
-    database = client.db(keys.mongodb.database);
+    database = await mongoose.connect(keys.mongodb.dbURI);
+    console.log('Connected to mongoose daTabase');
   } catch (err) {
     console.log('Error connecting to MongoDB', err);
     throw err; // Ensure errors are handled
