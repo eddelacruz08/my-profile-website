@@ -1,11 +1,11 @@
-const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
 const keys = require('./keys'); // Ensure this file correctly exports your MongoDB URI and database name
 
 let database;
 
 const connectToDatabase = async () => {
   try {
-    const client = await MongoClient.connect(keys.mongodb.dbURI);
+    const client = await mongoose.connect(keys.mongodb.dbURI);
     console.log('Connected to MongoDB');
     database = client.db(keys.mongodb.database);
   } catch (err) {
