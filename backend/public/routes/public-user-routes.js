@@ -1,8 +1,7 @@
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const router = express.Router();
-const keys = require('./public/config/keys');
-
+const keys = require('../config/keys');
 let database;
 
 const connectToDatabase = async () => {
