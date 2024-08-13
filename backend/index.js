@@ -3,7 +3,7 @@ const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
-const passportSetup = require('./public/config/passport-setup');
+require('./public/config/passport-setup');
 const keys = require('./public/config/keys');
 const authRoutes = require('./public/routes/auth-routes');
 const cors = require('cors');
@@ -21,17 +21,42 @@ app.use(
   })
 );
 
+// MongoDB connection setup
+let isConnected;
+
+const connectToDatabase = async () => {
+  if (!isConnected) {
+    try {
+      await mongoose.connect(keys.mongodb.dbURI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        poolSize: 10,
+      });
+      isConnected = true;
+      console.log('Connected to MongoDB via Mongoose');
+    } catch (err) {
+      console.error('Error connecting to MongoDB via Mongoose', err);
+      process.exit(1); // Exit the process if the connection fails
+    }
+  }
+};
+
+connectToDatabase();
+
 // Replace cookieSession with express-session
 app.use(
   session({
     secret: keys.session.cookieKey,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: keys.mongodb.dbURI }),
+    store: MongoStore.create({
+      mongoUrl: keys.mongodb.dbURI,
+      autoRemove: 'native', // Automatically remove expired sessions
+    }),
     cookie: {
-      secure: true,
+      secure: true, // Ensure secure cookies in production
       httpOnly: true, // Helps mitigate XSS attacks
-      sameSite: 'lax', // Helps protect against CSRF attacks }, // Set to true if using HTTPS
+      sameSite: 'lax', // Helps protect against CSRF attacks
     },
   })
 );
@@ -39,29 +64,23 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Connect to MongoDB using mongoose
-mongoose
-  .connect(keys.mongodb.dbURI)
-  .then(() => {
-    console.log('Connected to MongoDB via Mongoose');
-  })
-  .catch((err) => {
-    console.log('Error connecting to MongoDB via Mongoose', err);
-    process.exit(1); // Exit the process if the connection fails
-  });
-
 // Import routes
 const pageLinksRoutes = require('./public/routes/page-links-routes');
 const publicUserRoutes = require('./public/routes/public-user-routes');
 const userRoutes = require('./public/routes/user-routes');
+
+// Middleware to check database connection for each request
+app.use(async (req, res, next) => {
+  await connectToDatabase(); // Ensure the database connection is established
+  next();
+});
 
 app.get('/', (req, res) => {
   res.send('Hello from the serverless function!');
 });
 
 // Define global public routes (no authentication required)
-app.use('/api', pageLinksRoutes);
-app.use('/api', publicUserRoutes);
+app.use('/api', pageLinksRoutes, publicUserRoutes);
 
 // Use authRoutes for authentication
 app.use('/api', authRoutes);
@@ -72,10 +91,10 @@ app.use('/api', requireAuth);
 // Define private routes (authentication required)
 app.use('/api', userRoutes);
 
-// Prevent caching of authenticated pages
-app.use((req, res, next) => {
-  res.setHeader('Cache-Control', 'no-store');
-  next();
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('An error occurred:', err.message);
+  res.status(500).json({ error: 'Internal Server Error', details: err.message });
 });
 
 module.exports = app;
