@@ -1,30 +1,7 @@
 const express = require('express');
-const { MongoClient } = require('mongodb');
 const router = express.Router();
-const keys = require('../config/keys');
 
-let database;
-
-const connectToDatabase = async () => {
-  try {
-    const client = await MongoClient.connect(keys.mongodb.dbURI);
-    console.log('Connected to MongoDB');
-    database = client.db(keys.mongodb.database);
-  } catch (err) {
-    console.log('Error connecting to MongoDB', err);
-    throw err; // Ensure errors are handled
-  }
-};
-
-// Call this function to initialize the database
-connectToDatabase();
-
-const getDatabase = () => {
-  if (!database) {
-    throw new Error('Database not initialized');
-  }
-  return database;
-};
+const { getDatabase } = require('../config/database');
 
 // API to get page links
 router.get('/page-links/get-page-links', async (req, res) => {
