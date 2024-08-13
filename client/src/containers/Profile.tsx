@@ -54,22 +54,22 @@ export default function Profile() {
         setUserInfo(response2.data);
         setWorkExperience(response2.data?.work_experiences);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          if (username === undefined) {
-            navigate('/'); // Redirect to login if unauthorized
-          }
-        }
+        //if (error.response && error.response.status === 401) {
+        //  if (username === undefined) {
+        //    navigate('/'); // Redirect to login if unauthorized
+        //  }
+        //}
         setError(error);
       } finally {
         setLoading(false);
       }
       // Prevent back button from accessing cached page after logout
-      if (username === undefined) {
-        window.history.pushState(null, '', window.location.href);
-        window.onpopstate = function () {
-          window.history.pushState(null, '', window.location.href);
-        };
-      }
+      //if (username === undefined) {
+      //  window.history.pushState(null, '', window.location.href);
+      //  window.onpopstate = function () {
+      //    window.history.pushState(null, '', window.location.href);
+      //  };
+      //}
     };
     // Call the function to fetch data
     fetchData();

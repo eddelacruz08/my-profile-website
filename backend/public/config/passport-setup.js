@@ -8,7 +8,7 @@ passport.use(
     {
       clientID: keys.google.clientID,
       clientSecret: keys.google.clientSecret,
-      callbackURL: '/api/auth/google/callback', // Ensure this matches your Google API settings
+      callbackURL: '/auth/google/callback', // Ensure this matches your Google API settings
       proxy: true, // Set to true if your app is behind a proxy or load balancer
     },
     async (accessToken, refreshToken, profile, done) => {
