@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const PageLink = require('../models/PageLink'); // Import the PageLink model
+const PageLink = require('../models/pageLinks'); // Import the PageLink model
 
 // API to get page links
 router.get('/page-links/get-page-links', async (req, res) => {
